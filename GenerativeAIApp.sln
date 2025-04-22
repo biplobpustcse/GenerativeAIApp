@@ -5,6 +5,12 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAIApp.API", "GenerativeAIApp.API\GenerativeAIApp.API.csproj", "{25D558F2-A1E1-4B49-8BFB-364357771379}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAIApp.BLL", "GenerativeAIApp.BLL\GenerativeAIApp.BLL.csproj", "{C50DAE08-4789-4AAD-9558-0AA0CDE8DC3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAIApp.DAL", "GenerativeAIApp.DAL\GenerativeAIApp.DAL.csproj", "{3EE2B246-2B4A-4184-B381-6CF67D1B6595}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAIApp.Core", "GenerativeAIApp.Core\GenerativeAIApp.Core.csproj", "{D474C3A7-243B-4A78-97B5-54E4A4D3E2F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{25D558F2-A1E1-4B49-8BFB-364357771379}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25D558F2-A1E1-4B49-8BFB-364357771379}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25D558F2-A1E1-4B49-8BFB-364357771379}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C50DAE08-4789-4AAD-9558-0AA0CDE8DC3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C50DAE08-4789-4AAD-9558-0AA0CDE8DC3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C50DAE08-4789-4AAD-9558-0AA0CDE8DC3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C50DAE08-4789-4AAD-9558-0AA0CDE8DC3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EE2B246-2B4A-4184-B381-6CF67D1B6595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EE2B246-2B4A-4184-B381-6CF67D1B6595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EE2B246-2B4A-4184-B381-6CF67D1B6595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EE2B246-2B4A-4184-B381-6CF67D1B6595}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D474C3A7-243B-4A78-97B5-54E4A4D3E2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D474C3A7-243B-4A78-97B5-54E4A4D3E2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D474C3A7-243B-4A78-97B5-54E4A4D3E2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D474C3A7-243B-4A78-97B5-54E4A4D3E2F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
