@@ -50,7 +50,6 @@ namespace GenerativeAIApp.API.Controllers
             var newToken = _tokenService.GenerateRefreshToken(token);
             return newToken is null ? BadRequest("Invalid token") : Ok(new { token = newToken });
         }
-
         #endregion
     }
 }
