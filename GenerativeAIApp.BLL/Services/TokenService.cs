@@ -44,5 +44,19 @@ namespace GenerativeAIApp.BLL.Services
 
             return _tokenHandler.WriteToken(token);
         }
+
+        public string GenerateRefreshToken(string token)
+        {
+            var claims = new[] { new Claim(ClaimTypes.Name, token) };
+
+            var newToken = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: _creds
+            );
+            return _tokenHandler.WriteToken(newToken);
+        }
     }
 }

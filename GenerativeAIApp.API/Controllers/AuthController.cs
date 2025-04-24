@@ -31,17 +31,24 @@ namespace GenerativeAIApp.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login(UserLoginDto userLoginDto)
+        public async Task<IActionResult> Login(UserLoginDto dto)
         {
             var user = await _userService.ValidateUserAsync(
-                username: userLoginDto.Username,
-                password: userLoginDto.Password
+                username: dto.Username,
+                password: dto.Password
             );
-            if (user == null)
-                return Unauthorized("Invalid credentials");
+            if (user is null)
+                return BadRequest("Invalid username or password");
 
             var token = _tokenService.GenerateToken(user: user);
             return Ok(new { token });
+        }
+
+        [HttpGet("refresh-token")]
+        public IActionResult RefreshToken(string token)
+        {
+            var newToken = _tokenService.GenerateRefreshToken(token);
+            return newToken is null ? BadRequest("Invalid token") : Ok(new { token = newToken });
         }
 
         #endregion
