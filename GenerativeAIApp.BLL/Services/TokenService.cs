@@ -14,10 +14,16 @@ namespace GenerativeAIApp.BLL.Services
     public class TokenService
     {
         private readonly IConfiguration _config;
+        private readonly SymmetricSecurityKey _key;
+        private readonly SigningCredentials _creds;
+        private readonly JwtSecurityTokenHandler _tokenHandler;
 
         public TokenService(IConfiguration configuration)
         {
             _config = configuration;
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            _creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
+            _tokenHandler = new JwtSecurityTokenHandler();
         }
 
         public string GenerateToken(User user)
@@ -28,18 +34,15 @@ namespace GenerativeAIApp.BLL.Services
                 new Claim(ClaimTypes.Role, user.Role),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds
+                signingCredentials: _creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return _tokenHandler.WriteToken(token);
         }
     }
 }
