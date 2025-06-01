@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using GenerativeAIApp.API.Middleware;
 using GenerativeAIApp.BLL.Services;
 using GenerativeAIApp.Core.Interfaces;
@@ -73,6 +74,37 @@ builder.Services.AddSwaggerGen(options =>
             },
         }
     );
+});
+
+// RateLimiter
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.User.Identity?.Name
+                ?? httpContext.Request.Headers.Host.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 3,
+                QueueLimit = 0,
+                Window = TimeSpan.FromSeconds(5),
+            }
+        )
+    );
+
+    options.OnRejected = (context, cancellationToken) =>
+    {
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            context.HttpContext.Response.Headers.RetryAfter = retryAfter.TotalSeconds.ToString();
+        }
+
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.");
+
+        return new ValueTask();
+    };
 });
 
 // Add services to the container.
