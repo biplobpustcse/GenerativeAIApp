@@ -18,8 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // DI registration
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 
 // JWT Auth
