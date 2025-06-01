@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GenerativeAIApp.Core\GenerativeAIApp.Core.csproj" />
     <ProjectReference Include="..\GenerativeAIApp.DAL\GenerativeAIApp.DAL.csproj" />
   </ItemGroup>

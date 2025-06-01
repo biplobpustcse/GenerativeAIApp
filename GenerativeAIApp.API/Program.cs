@@ -1,4 +1,5 @@
 using System.Text;
+using GenerativeAIApp.API.Middleware;
 using GenerativeAIApp.BLL.Services;
 using GenerativeAIApp.Core.Interfaces;
 using GenerativeAIApp.DAL.Data;
@@ -6,6 +7,7 @@ using GenerativeAIApp.DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 
 // JWT Auth
 var jwtKey = builder.Configuration["Jwt:Key"]!;
@@ -38,6 +41,40 @@ builder
     });
 builder.Services.AddAuthorization();
 
+//Add Swagger JWT Support
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition(
+        "Bearer",
+        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Description = "Enter 'Bearer {your token}'",
+        }
+    );
+
+    options.AddSecurityRequirement(
+        new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "Bearer",
+                    },
+                },
+                new string[] { }
+            },
+        }
+    );
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -46,13 +83,35 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Setup Serilog BEFORE building the app
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+// Replace default .NET logger with Serilog
+builder.Host.UseSerilog();
+
+// Add CORS policy to allow all origins
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAllOrigins",
+        policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+    );
+});
+
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseAuthentication(); // MUST come before Authorization
 app.UseAuthorization();
 
 app.MapControllers();

@@ -1,6 +1,5 @@
 ﻿using GenerativeAIApp.BLL.Services;
 using GenerativeAIApp.Core.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenerativeAIApp.API.Controllers
